@@ -1,0 +1,63 @@
+=== tb_cnn_accelerator_axi: seed=1 ===
+[T1] START reset values and hardware ID
+[T1] PASS  reset values and hardware ID
+[T2] START register read/write, RO and unmapped writes
+[T2] PASS  register read/write, RO and unmapped writes
+[T3] START 4x4 identity (original basic test)
+[T3] PASS  4x4 identity (original basic test)
+[T4] START 4x4 X rows [1 2 3 4], W all ones
+[T4] PASS  4x4 X rows [1 2 3 4], W all ones
+[T5] START 3 sizes x 7 data classes (exact, bit-for-bit)
+[T5] PASS  3 sizes x 7 data classes (exact, bit-for-bit)
+[T6] START performance counters match board measurements
+[T6] PASS  performance counters match board measurements
+[T7] START back-to-back runs, mixed sizes
+[T7] PASS  back-to-back runs, mixed sizes
+[T8] START weights loaded once, three different X
+[T8] PASS  weights loaded once, three different X
+[T9] START START again without rewriting X or W
+[T9] PASS  START again without rewriting X or W
+[T10] START START issued before the data is loaded
+[T10] PASS  START issued before the data is loaded
+[T11] START data writes are ignored while a run is active
+[T11] PASS  data writes are ignored while a run is active
+[T12] START t reset (CTRL bit 1) during a run, then recovery
+[T12] PASS  t reset (CTRL bit 1) during a run, then recovery
+[T13] START ARESETN low during a run, then recovery
+[T13] PASS  ARESETN low during a run, then recovery
+[T14] START AW/W arrival order and delays (SIZE register)
+[T14] PASS  AW/W arrival order and delays (SIZE register)
+[T15] START /R back-pressure while loading and reading 16x16
+[T15] PASS  /R back-pressure while loading and reading 16x16
+[T16] START golden vectors (software-model bit-exact, FP32)
+[T16] PASS  golden vectors (software-model bit-exact, FP32)
+[T17] START constrained-random stress (seeded)
+[T17] PASS  constrained-random stress (seeded)
+=== FUNCTIONAL COVERAGE (hand-written bins; not code coverage) ===
+sizes 4/8/16 hit: 111
+data classes random/zeros/identity/negative/sparse/maxmag/cancel hit: 1111111
+AXI write order AW+W / AW first / W first: 111
+B back-pressure 1, R back-pressure 1, soft reset in run 1, hardware reset in run 1
+weight reuse 1, rerun without reload 1, start before load 1, writes while busy 1
+back-to-back 1, mixed sizes 1, RO/unmapped writes 1, perf counters 1, golden vectors 1
+EVENT BINS COVERED: 26 / 26
+CROSS BINS (size x class 21, write order x size 9) COVERED: 30 / 30
+=== END ===
+=== PROTOCOL CHECKER SUMMARY ===
+mode: PROCEDURAL checkers (not native SVA)
+checker failures: 0  (evaluations: 256222)
+AXI handshakes: AW 8048, W 8048, B 8048, AR 8292, R 8292
+=== END ===
+=== SUMMARY ===
+seed: 1   test: 0
+total tests: 17
+passed tests: 17
+failed tests: 0
+total checks: 12189
+scoreboard/testbench errors: 0
+protocol checker failures: 0
+functional EVENT bins covered: 26 / 26
+functional CROSS bins covered: 30 / 30
+FINAL: PASS
+=== END ===
+tb/tb_cnn_accelerator_axi.v:723: $finish called at 2723619129 (1ps)

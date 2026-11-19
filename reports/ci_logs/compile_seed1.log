@@ -1,0 +1,14 @@
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module address_generator declared here: design.v:641
+       :   -- module cnn_accelerator_top declared here: design.v:1026
+       :   -- module controller_fsm declared here: design.v:479
+       :   -- module fp32_add declared here: design.v:132
+       :   -- module fp32_mul declared here: design.v:2
+       :   -- module output_buffer declared here: design.v:847
+       :   -- module pe_fp32 declared here: design.v:347
+       :   -- module performance_monitor declared here: design.v:942
+       :   -- module systolic_array declared here: design.v:416
+       :   -- module vector_mem declared here: design.v:804
+       :   -- module write_pointer declared here: design.v:583
