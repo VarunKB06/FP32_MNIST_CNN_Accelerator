@@ -88,9 +88,9 @@ jobs:
       - run: mkdir -p build reports waveforms
       - name: Compile
         run: iverilog -g2012 -s tb_cnn_accelerator_axi -o build/sim_wave.vvp $RTL 2>&1 | tee reports/compile_wave.log
-      - name: Run with VCD dump
+      - name: Run with VCD dump (tests 3, 6, 11, 12 and 14 only, mask 22600)
         run: |
-          vvp build/sim_wave.vvp +seed=1 +vcd 2>&1 | tee reports/sim_wave.log
+          vvp build/sim_wave.vvp +seed=1 +vcd +vcdmask=22600 2>&1 | tee reports/sim_wave.log
           grep -q "FINAL: PASS" reports/sim_wave.log
       - name: Verify VCD
         if: always()
