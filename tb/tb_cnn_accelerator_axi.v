@@ -49,6 +49,7 @@ module tb_cnn_accelerator_axi;
     integer seed, seed0;
     integer tb_checks = 0, tb_errors = 0, tests_run = 0, tests_pass = 0, tests_fail = 0, err_base = 0;
     integer cur_id = 0, watchdog = 0, shown = 0;
+    integer vcd_mask = 0; reg vcd_gate = 1'b0;      // +vcdmask=N: dump only tests whose id bit is set in N
     reg [8*48-1:0] cur_name;
 
     function integer rnd(input integer m);
@@ -349,6 +350,7 @@ module tb_cnn_accelerator_axi;
         begin
             cur_id = id; cur_name = name; err_base = errors_now(0);
             $display("[T%0d] START %0s", id, name);
+            if (vcd_gate) begin if (vcd_mask[id]) $dumpon; else $dumpoff; end
             timing_default; hw_reset;
         end
     endtask
@@ -550,7 +552,7 @@ module tb_cnn_accelerator_axi;
 
     task test_soft_reset_in_run;
         begin
-            begin_test(12, "soft reset (CTRL bit 1) during a run, then recovery");
+            begin_test(12, "soft reset during a run, then recovery");
             L = 16; gen_data(L, 0); ints_to_words(L); compute_expected(L);
             axi_write(ADDR_SIZE, size_code(L)); load_X(L); load_W(L);
             start_run; repeat (200) @(posedge clk);
@@ -597,7 +599,7 @@ module tb_cnn_accelerator_axi;
 
     task test_backpressure;
         begin
-            begin_test(15, "B/R back-pressure while loading and reading 16x16");
+            begin_test(15, "B/R back-pressure, 16x16 and 8x8 runs");
             t_mode = 1; t_gap = 2; t_bd = 3; t_rd = 2;
             run_exact(16, 0, 1'b0);
             t_mode = 2; t_gap = 1; t_bd = 1; t_rd = 4;
@@ -698,6 +700,7 @@ module tb_cnn_accelerator_axi;
         if ($test$plusargs("vcd")) begin
             $dumpfile("waveforms/tb_cnn_accelerator_axi.vcd");
             $dumpvars(0, tb_cnn_accelerator_axi);
+            if ($value$plusargs("vcdmask=%d", vcd_mask)) begin vcd_gate = 1'b1; $dumpoff; end
         end
         $readmemh("vectors/golden_16x16.hex", gv);
         $display("=== tb_cnn_accelerator_axi: seed=%0d ===", seed0);
