@@ -1,0 +1,109 @@
+Excerpt of the interactive `test.py` run on the PYNQ-Z2 (design_1.bit, accelerator IP cnn_accelerator_axi_0).
+The printed random 8x8 and 16x16 input/output matrices are omitted; the verification lines and performance
+summaries are verbatim. Clock value used by test.py for these runs: 94.1 MHz (constant in test.py; see docs/FPGA_RESULTS.md,
+"Clock note"). Power / energy values are model-based estimates, not measurements.
+
+Loading FPGA bitstream...
+Available IPs: ['cnn_accelerator_axi_0']
+Accelerator connected: cnn_accelerator_axi_0 (matrix-multiply design)
+
+==== 4x4 test, X rows = [1 2 3 4], W = all ones ====
+Y = X . W  (hardware)
+         10        10        10        10   (every row)
+OUTPUT VERIFICATION
+16 of 16 outputs match (max abs error 0) -> PASS
+
+------------------------------------------------------
+             4x4 PERFORMANCE SUMMARY
+------------------------------------------------------
+  Matrix multiply                 4x4 . 4x4
+  Tile passes (4x4)                       1
+  MAC operations                         64
+  Total cycles                           64
+  Feature load cycles                     1
+  Weight load cycles                      1
+  Compute cycles                         48
+  Output store cycles                    16
+  Busy cycles                            54
+  Idle cycles                            10
+  Clock                            94.1 MHz
+  Hardware latency                 0.680 us
+  Throughput                  125.49 MMAC/s
+  Performance                 0.1882 GFLOPS
+  PE utilisation                      8.33%
+  Busy-cycle ratio                   84.38%
+  PS-observed time                 98.77 us
+------------------------------------------------------
+  Power consumed (estimated)       1.700 W
+  Energy per run (estimated)      1.156 uJ
+------------------------------------------------------
+
+==== 8x8 test, random X and W ====
+OUTPUT VERIFICATION
+64 of 64 outputs match (max abs error 2.13e-06) -> PASS
+
+------------------------------------------------------
+             8x8 PERFORMANCE SUMMARY
+------------------------------------------------------
+  Matrix multiply                 8x8 . 8x8
+  Tile passes (4x4)                       4
+  MAC operations                        512
+  Total cycles                          287
+  Feature load cycles                     1
+  Weight load cycles                      1
+  Compute cycles                        256
+  Output store cycles                   128
+  Busy cycles                           274
+  Idle cycles                            13
+  Clock                            94.1 MHz
+  Hardware latency                 3.049 us
+  Throughput                  188.24 MMAC/s
+  Performance                 0.3358 GFLOPS
+  PE utilisation                     12.50%
+  Busy-cycle ratio                   95.47%
+  PS-observed time                 98.07 us
+------------------------------------------------------
+  Power consumed (estimated)       1.705 W
+  Energy per run (estimated)      5.198 uJ
+------------------------------------------------------
+
+==== 16x16 test, random X and W ====
+OUTPUT VERIFICATION
+256 of 256 outputs match (max abs error 5.49e-06) -> PASS
+
+------------------------------------------------------
+             16x16 PERFORMANCE SUMMARY
+------------------------------------------------------
+  Matrix multiply             16x16 . 16x16
+  Tile passes (4x4)                      16
+  MAC operations                      4,096
+  Total cycles                        1,627
+  Feature load cycles                     1
+  Weight load cycles                      1
+  Compute cycles                      1,536
+  Output store cycles                 1,024
+  Busy cycles                         1,602
+  Idle cycles                            25
+  Clock                            94.1 MHz
+  Hardware latency                17.287 us
+  Throughput                  250.98 MMAC/s
+  Performance                 0.4739 GFLOPS
+  PE utilisation                     16.67%
+  Busy-cycle ratio                   98.46%
+  PS-observed time                103.29 us
+------------------------------------------------------
+  Power consumed (estimated)       1.706 W
+  Energy per run (estimated)      29.492 uJ
+------------------------------------------------------
+
+==== Option 4: compare all three (random data) ====
+==================================================================================================
+        ARCHITECTURE COMPARISON  (same physical 4x4 array, logical size selected at run time)
+==================================================================================================
+Size    Passes    MACs   Cycles  Latency us   MMAC/s   GFLOPS  Util %  Power W*  Energy uJ*  Check
+--------------------------------------------------------------------------------------------------
+4x4          1      64       64       0.680   125.49   0.1882    8.33     1.700       1.156   PASS
+8x8          4     512      287       3.049   188.24   0.3358   12.50     1.705       5.198   PASS
+16x16       16   4,096    1,627      17.287   250.98   0.4739   16.67     1.706      29.492   PASS
+--------------------------------------------------------------------------------------------------
+* power / energy are model-based estimates, not measurements.

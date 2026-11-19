@@ -1,0 +1,11 @@
+# Keep line endings consistent across Windows / Linux / the PYNQ board
+* text=auto
+*.py  text eol=lf
+*.v   text eol=lf
+*.md  text eol=lf
+*.txt text eol=lf
+*.csv text eol=lf
+*.bit binary
+*.hwh binary
+*.npz binary
+*.png binary

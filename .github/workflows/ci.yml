@@ -1,0 +1,114 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:          # manual run: Actions tab -> CI -> Run workflow
+
+env:
+  RTL: design.v axi.v tb/tb_cnn_accelerator_axi.v
+
+jobs:
+  python-reference:
+    name: python reference + self-tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy
+      - run: python -m py_compile accel_driver.py cnn_pynq.py cnn_reference.py train_mnist.py
+      - name: Software-model self-tests
+        run: python cnn_reference.py --selftest
+      - name: 200-image software-twin evaluation (exit status checks 100% agreement with PyTorch)
+        run: python cnn_reference.py --n 200
+
+  rtl-simulation:
+    name: RTL simulation (seed ${{ matrix.seed }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [1, 2, 3]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Icarus Verilog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+      - name: Simulator version
+        run: iverilog -V | head -n 1
+      - run: mkdir -p build reports waveforms
+      - name: Compile
+        run: |
+          iverilog -g2012 -Wall -s tb_cnn_accelerator_axi -o build/sim.vvp $RTL 2>&1 | tee reports/compile_seed${{ matrix.seed }}.log
+      - name: Run self-checking testbench (seed ${{ matrix.seed }})
+        run: |
+          vvp build/sim.vvp +seed=${{ matrix.seed }} 2>&1 | tee reports/sim_seed${{ matrix.seed }}.log
+      - name: Check results
+        env:
+          SEED: ${{ matrix.seed }}
+        run: |
+          LOG=reports/sim_seed${SEED}.log
+          sed -n '/=== SUMMARY/,/=== END/p' "$LOG" | tee -a "$GITHUB_STEP_SUMMARY"
+          grep -q "seed: ${SEED} " "$LOG"
+          grep -q "FINAL: PASS" "$LOG"
+          grep -Eq "failed tests: 0$" "$LOG"
+          grep -Eq "scoreboard/testbench errors: 0$" "$LOG"
+          grep -Eq "protocol checker failures: 0$" "$LOG"
+          if grep -Eq "TB FAIL|CHECK FAIL|WATCHDOG|\] FAIL " "$LOG"; then echo "error lines in $LOG"; exit 1; fi
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sim-logs-seed-${{ matrix.seed }}
+          path: reports/
+          retention-days: 30
+
+  waveform:
+    name: waveform (VCD)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Icarus Verilog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+      - run: mkdir -p build reports waveforms
+      - name: Compile
+        run: iverilog -g2012 -s tb_cnn_accelerator_axi -o build/sim_wave.vvp $RTL 2>&1 | tee reports/compile_wave.log
+      - name: Run with VCD dump
+        run: |
+          vvp build/sim_wave.vvp +seed=1 +vcd 2>&1 | tee reports/sim_wave.log
+          grep -q "FINAL: PASS" reports/sim_wave.log
+      - name: Verify VCD
+        if: always()
+        run: |
+          ls -l waveforms/
+          test -s waveforms/tb_cnn_accelerator_axi.vcd
+      - name: Upload waveform
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: waveform-vcd
+          path: waveforms/*.vcd
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload waveform job logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: waveform-job-logs
+          path: reports/
+          retention-days: 30

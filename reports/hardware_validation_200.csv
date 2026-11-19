@@ -1,0 +1,21 @@
+metric,value,unit,scope
+images_evaluated,200,images,PYNQ-Z2 board run
+correct_classifications,197,images,PYNQ-Z2 board run
+accuracy,98.50,percent,PYNQ-Z2 board run
+pytorch_prediction_agreement,100,percent,PYNQ-Z2 board run
+max_absolute_logit_difference,1.14e-05,logit units,PYNQ-Z2 board run
+clock,94.1176,MHz,implemented design clock (Vivado timing report and design_1.hwh); the board run originally printed 58.8 MHz from the PYNQ clock API
+hardware_cycles_per_image,77730,cycles/image,PYNQ-Z2 board run (measured; independent of the clock)
+hardware_latency_per_image,0.8259,ms/image,derived: 77730 cycles at 94.1176 MHz (originally printed 1.3214 ms at 58.8 MHz)
+hardware_only_throughput,1211,images/s,derived: 94.1176e6 / 77730 (originally printed 757 images/s at 58.8 MHz)
+end_to_end_ps_throughput,17.5,images/s,PYNQ-Z2 board run (measured wall time)
+end_to_end_ps_latency,57.15,ms/image,PYNQ-Z2 board run (measured wall time)
+hardware_runs,9555,runs total,PYNQ-Z2 board run
+hardware_runs_per_image,47.77,runs/image,PYNQ-Z2 board run
+useful_macs_per_image,62192,MACs/image,PYNQ-Z2 board run
+useful_macs_per_hardware_cycle,0.80,MACs/cycle,PYNQ-Z2 board run
+busy_cycle_ratio,98.46,percent,PYNQ-Z2 board run
+axi_words_per_image,25837,words/image,PYNQ-Z2 board run
+estimated_power,1.706,W,model-based estimate; not measured
+estimated_energy_per_image,1409,uJ/image,model-based estimate (1.706 W x 0.8259 ms); not measured (originally printed 2254.36 at 58.8 MHz)
+vivado_power_estimate_total_on_chip,1.735,W,Vivado post-implementation estimate (vectorless; confidence Medium); not measured

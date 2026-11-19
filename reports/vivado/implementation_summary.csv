@@ -1,0 +1,23 @@
+metric,value,unit,source
+device,xc7z020clg400-1,,utilization_report.txt
+tool,Vivado v2026.1,,utilization_report.txt
+design_state,Routed,,utilization_report.txt
+clock_period,10.625,ns,timing_1.rpx
+clock_frequency,94.1176,MHz,timing_1.rpx
+slice_luts,10366,LUTs (19.48% of 53200),utilization_report.txt
+lut_as_logic,8587,LUTs,utilization_report.txt
+lut_as_memory,1779,LUTs (1232 distributed RAM + 547 shift register),utilization_report.txt
+slice_registers,8184,FFs (7.69% of 106400),utilization_report.txt
+slices,3328,slices (25.02% of 13300),utilization_report.txt
+block_ram,0,tiles,utilization_report.txt
+dsp48e1,32,DSPs (14.55% of 220),utilization_report.txt
+bufg,1,,utilization_report.txt
+setup_wns,0.179,ns,timing_1.rpx (decoded)
+hold_whs,0.024,ns,timing_1.rpx (decoded)
+pulse_width_wpws,4.0625,ns,timing_1.rpx (decoded)
+failing_endpoints,0,,timing_1.rpx (decoded)
+total_on_chip_power_estimate,1.735,W,vivado power summary (estimate; confidence Medium; not measured)
+dynamic_power_estimate,1.598,W,vivado power summary
+device_static_power_estimate,0.138,W,vivado power summary
+ps7_power_estimate,1.526,W,vivado power summary
+pl_clocks_signals_logic_dsp_estimate,0.071,W,vivado power summary (0.040+0.017+0.014+<0.001)

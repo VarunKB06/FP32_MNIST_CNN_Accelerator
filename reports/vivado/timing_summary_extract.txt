@@ -1,0 +1,10 @@
+Timing summary values decoded from reports/vivado/timing_1.rpx (binary Vivado report, "Timing analysis from
+Implemented netlist", Vivado v2026.1, xc7z020clg400-1). Decoded programmatically; confirm in Vivado
+(Reports > Timing > Report Timing Summary) and replace this file with the text report when available.
+
+clock                     clk_fpga_0, period 10.625 ns (94.1176 MHz), waveform 0.000 - 5.3125 ns
+Setup   WNS               +0.179 ns   TNS 0.000 ns   failing endpoints 0 of 28,549
+Hold    WHS               +0.024 ns   THS 0.000 ns   failing endpoints 0 of 28,549
+Pulse width WPWS          +4.0625 ns  TPWS 0.000 ns  failing endpoints 0 of 9,996
+Implication               all timing slacks positive: constraints met at 94.1 MHz, with little setup margin
+                          (about 0.18 ns; approximate setup-limited Fmax = 1 / (10.625 - 0.179) ns = 95.7 MHz)

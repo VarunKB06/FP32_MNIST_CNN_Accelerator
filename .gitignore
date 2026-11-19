@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*.jou
+*.log
+*.str
+.Xil/
+.vscode/
+.DS_Store
+# Raw MNIST download files are reproducible and not needed for inference.
+data/MNIST/
