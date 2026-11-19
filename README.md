@@ -21,7 +21,7 @@ AXI4-Lite; Python does the preprocessing and orchestration. Academic major proje
 | FPGA resources | 10,366 LUTs (19.5%), 8,184 FFs (7.7%), 32 DSPs (14.6%), 0 BRAM |
 | Timing | clock 94.1176 MHz, setup WNS +0.179 ns, hold WHS +0.024 ns, 0 failing endpoints |
 | Power | Vivado estimate 1.735 W total (PS7 1.526 W); an estimate, not a measurement |
-| RTL verification | self-checking AXI4-Lite testbench, 17 tests; runs in GitHub Actions for seeds 1, 2, 3 |
+| RTL verification | self-checking AXI4-Lite testbench: 17/17 tests pass for seeds 1, 2, 3 (Icarus Verilog, GitHub Actions); 26/26 event and 30/30 cross coverage bins |
 
 Details, methodology and caveats: [docs/FPGA_RESULTS.md](docs/FPGA_RESULTS.md). The 58.8 MHz clock printed by the first CNN
 board runs was a PYNQ clock-API value; the implemented design runs at 94.1176 MHz and the time-based figures were recomputed
@@ -40,7 +40,7 @@ STATUS 0x008 (done, busy, input_loaded, weight_loaded, output_valid), FEATURE 0x
 ## Verification
 | Item | Status |
 |---|---|
-| RTL testbench `tb/tb_cnn_accelerator_axi.v` | self-checking; AXI4-Lite master model, scoreboard, procedural protocol checkers, coverage, 17 tests; **GitHub Actions: seeds 1, 2, 3** |
+| RTL testbench `tb/tb_cnn_accelerator_axi.v` | self-checking; AXI4-Lite master model, scoreboard, procedural protocol checkers, coverage; **17/17 tests pass, seeds 1, 2, 3 (GitHub Actions)** |
 | Software model self-tests (`cnn_reference.py --selftest`, `--n 200`) | CI job `python-reference` |
 | PYNQ-Z2 runs (10 and 200 images; matrix test 4x4/8x8/16x16) | done, results recorded |
 | AXI protocol compliance by formal methods | not done (procedural checks only) |
@@ -62,6 +62,27 @@ STATUS 0x008 (done, busy, input_loaded, weight_loaded, output_valid), FEATURE 0x
   delay variations; back-pressure; golden vectors; seeded constrained-random stress.
 - **Coverage:** hand-written event and cross bins (sizes, data classes, write orders, back-pressure, resets, reuse, ...); not
   RTL code coverage.
+
+## RTL simulation results (GitHub Actions, Icarus Verilog, `tb_cnn_accelerator_axi`)
+| Item | seed 1 | seed 2 | seed 3 |
+|---|---|---|---|
+| Tests passed / failed | 17 / 0 | 17 / 0 | 17 / 0 |
+| Testbench / scoreboard errors | 0 | 0 | 0 |
+| Protocol checker failures | 0 | 0 | 0 |
+| Total checks | 12,189 | 12,093 | 13,149 |
+| Checker evaluations | 256,222 | 248,618 | 271,348 |
+| Functional EVENT bins | 26 / 26 | 26 / 26 | 26 / 26 |
+| Functional CROSS bins | 30 / 30 | 30 / 30 | 30 / 30 |
+| Final | PASS | PASS | PASS |
+
+Logs: `reports/ci_logs/`; seed-1 extracts in `reports/rtl_simulation_summary.txt`, `reports/rtl_coverage_summary.txt` and
+`reports/rtl_protocol_checker_summary.txt`. What the passing results show:
+- **T06:** the simulated performance counters equal the cycle counts measured on the board (64 / 287 / 1,627 total cycles for 4x4 / 8x8 / 16x16), so the RTL in this repository matches the bitstream on that metric.
+- **T05, T07-T09, T17:** exact-data runs (3 sizes x 7 data classes, back-to-back, weight reuse, re-run, random) match the integer reference bit-for-bit.
+- **T16:** 8 general FP32 16x16 vector sets, including real convolution and fully-connected blocks, match the bit-accurate software model bit-for-bit.
+- **T10-T13:** START before data, writes ignored while busy, and soft / AXI reset during a run behave as specified and the accelerator recovers.
+- Icarus prints a harmless "no explicit time unit" warning for the RTL files (they contain no delays).
+Coverage is hand-written functional coverage, not RTL code coverage; the checkers are procedural, not native SVA. This is RTL simulation, not formal proof.
 
 ## Run
 ```bash
