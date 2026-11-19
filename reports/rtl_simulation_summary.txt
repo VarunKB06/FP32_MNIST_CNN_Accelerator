@@ -1,0 +1,12 @@
+=== SUMMARY ===
+seed: 1   test: 0
+total tests: 17
+passed tests: 17
+failed tests: 0
+total checks: 12189
+scoreboard/testbench errors: 0
+protocol checker failures: 0
+functional EVENT bins covered: 26 / 26
+functional CROSS bins covered: 30 / 30
+FINAL: PASS
+=== END ===

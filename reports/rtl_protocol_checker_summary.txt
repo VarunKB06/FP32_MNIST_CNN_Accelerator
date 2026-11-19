@@ -1,0 +1,5 @@
+=== PROTOCOL CHECKER SUMMARY ===
+mode: PROCEDURAL checkers (not native SVA)
+checker failures: 0  (evaluations: 256222)
+AXI handshakes: AW 8048, W 8048, B 8048, AR 8292, R 8292
+=== END ===

@@ -1,0 +1,10 @@
+=== FUNCTIONAL COVERAGE (hand-written bins; not code coverage) ===
+sizes 4/8/16 hit: 111
+data classes random/zeros/identity/negative/sparse/maxmag/cancel hit: 1111111
+AXI write order AW+W / AW first / W first: 111
+B back-pressure 1, R back-pressure 1, soft reset in run 1, hardware reset in run 1
+weight reuse 1, rerun without reload 1, start before load 1, writes while busy 1
+back-to-back 1, mixed sizes 1, RO/unmapped writes 1, perf counters 1, golden vectors 1
+EVENT BINS COVERED: 26 / 26
+CROSS BINS (size x class 21, write order x size 9) COVERED: 30 / 30
+=== END ===
