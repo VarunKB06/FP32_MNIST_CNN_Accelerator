@@ -84,6 +84,21 @@ Logs: `reports/ci_logs/`; seed-1 extracts in `reports/rtl_simulation_summary.txt
 - Icarus prints a harmless "no explicit time unit" warning for the RTL files (they contain no delays).
 Coverage is hand-written functional coverage, not RTL code coverage; the checkers are procedural, not native SVA. This is RTL simulation, not formal proof.
 
+## Waveforms (GTKWave, from the CI simulation)
+Captured from the VCD uploaded by the CI `waveform` job (tests 3, 6, 11, 12 and 14 are dumped; `cur_id` is the active test, and the `x` gaps between tests are simply the dump being switched off). All channels are AXI4-Lite; the clock is about 94.1 MHz.
+
+![T3 AXI writes](waveforms/gtkwave_t03_axi_size_feature_writes.png)
+*T3 (4x4 identity): a SIZE write (AWADDR 0x004, data 0 = 4x4) followed by FEATURE writes (AWADDR 0x00C), for example BF880000 = -1.0625 and BF600000 = -0.875. Each write completes with the AW/W handshake and then B.*
+
+![T6 feature load](waveforms/gtkwave_t06_feature_load_16x16.png)
+*T6 (performance-counter test, 16x16): back-to-back FEATURE writes with AW/W/B handshakes. ARADDR/RDATA still show the last counter read: address 0x02C (idle-cycle counter) = 0x0000000D = 13 cycles for the preceding 8x8 run, matching the board measurement.*
+
+![T6 output readback](waveforms/gtkwave_t06_output_readback.png)
+*T6: after `done` goes high, the result matrix is read back through the output window (ARADDR 0x630, 0x634, ...; RDATA carries the FP32 results) with AR/R handshakes.*
+
+![T11 output after ignored writes](waveforms/gtkwave_t11_output_after_ignored_writes.png)
+*T11: data writes made while a run was active (the last one, 0x7F7F7F7F to the weight register 0x010, is still on the bus) were ignored; after `done` the results are read back and match the reference.*
+
 ## Run
 ```bash
 # software model (NumPy only)
